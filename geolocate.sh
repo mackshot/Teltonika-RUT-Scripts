@@ -13,9 +13,9 @@ DEBUG=0
 CacheFile="/tmp/geolocate.cache"
 
 serving=`gsmctl -K`
-RT=`echo $serving | sed -E 's/.*"servingcell","[a-z]+","([a-z]+)".*/\1/i'`
-MCC=$((`echo $serving | sed -E 's/.*"servingcell","[a-z]+","LTE","[a-z]+",([0-9]+).*/\1/i'`))
-MNC=$((`echo $serving | sed -E 's/.*"servingcell","[a-z]+","LTE","[a-z]+",[0-9]+,([0-9]+).*/\1/i'`))
+RT=`echo $serving | sed -E 's/Access tech: ([a-z]+)\b.*/\1/i'`
+MCC=$((`echo $serving | sed -E 's/.*MCC: ([0-9]+)\b.*/\1/i'`))
+MNC=$((`echo $serving | sed -E 's/.*MNC: ([0-9]+)\b.*/\1/i'`))
 
 CARRIER=`gsmctl -o`
 
@@ -109,6 +109,7 @@ fi
 
 # https://developers.google.com/maps/documentation/geolocation/overview
 location=`curl --data "${requestBody}" -H "Content-Type: application/json" https://www.googleapis.com/geolocation/v1/geolocate?key=${GoogleApiKey}`
+# echo "curl --data \"${requestBody}\" -H \"Content-Type: application/json\" https://www.googleapis.com/geolocation/v1/geolocate?key=${GoogleApiKey}"
 notfound=`echo $location | sed -E 's/.*"(Not Found)".*/\1/'`
 if [[ "$notfound" == "Not Found" ]]; then
   echo $notfound

@@ -4,9 +4,9 @@ This is a collection of useful Scripts für Teltonika RUT devices.
 
 Scripts are tested on
 - RUT 240, Firmware
-  - RUT2_R_00.07.01.4
+  - RUT2_R_00.07.06.13
 - RUT 950, Firmware
-  - RUT9XX_R_00.06.08.6
+  - not tested
 
 (Feel free to add new supported firmwares to the list via a pull request.)
 
