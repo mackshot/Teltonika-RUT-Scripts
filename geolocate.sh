@@ -16,7 +16,7 @@ serving=`gsmctl -K`
 RT=`echo $serving | sed -E 's/Access tech: ([a-z]+)\b.*/\1/i'`
 MCC=$((`echo $serving | sed -E 's/.*MCC: ([0-9]+)\b.*/\1/i'`))
 MNC=$((`echo $serving | sed -E 's/.*MNC: ([0-9]+)\b.*/\1/i'`))
-
+CELL=`gsmctl -C`
 CARRIER=`gsmctl -o`
 
 if [[ "$RT" == "LTE" ]]; then
@@ -91,6 +91,8 @@ for i in $wifis; do
 done
 wifiAccessPoints="${wifiAccessPoints:1}"
 
+cellTowers="{ "cellId": $CELL, "mobileCountryCode": $MCC, "mobileNetworkCode": $MNC, "age": 0 }"
+
 requestBody=$(cat <<-END
 {
   "homeMobileCountryCode": $MCC,
@@ -98,7 +100,8 @@ requestBody=$(cat <<-END
   "radioType": "$RT",
   "carrier": "$CARRIER",
   "considerIp": false,
-  "wifiAccessPoints": [${wifiAccessPoints}]
+  "wifiAccessPoints": [${wifiAccessPoints}],
+  "cellTowers": [$cellTowers]
 }
 END
 )
