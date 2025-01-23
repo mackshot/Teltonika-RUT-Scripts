@@ -13,9 +13,10 @@ DEBUG=0
 CacheFile="/tmp/geolocate.cache"
 
 serving=`gsmctl -K`
-RT=`echo $serving | sed -E 's/.*"servingcell","[a-z]+","([a-z]+)".*/\1/i'`
-MCC=$((`echo $serving | sed -E 's/.*"servingcell","[a-z]+","LTE","[a-z]+",([0-9]+).*/\1/i'`))
-MNC=$((`echo $serving | sed -E 's/.*"servingcell","[a-z]+","LTE","[a-z]+",[0-9]+,([0-9]+).*/\1/i'`))
+RT=`echo $serving | awk -F, '{print $3}' | tr -d \"`
+MCC=`echo $serving | awk -F, '{print $5}'`
+MNC=`echo $serving | awk -F, '{print $6}'`
+CELL=`echo $serving | awk -F, '{print "0x"$7}' | xargs printf "%d"`
 
 CARRIER=`gsmctl -o`
 
@@ -91,6 +92,8 @@ for i in $wifis; do
 done
 wifiAccessPoints="${wifiAccessPoints:1}"
 
+cellTowers="{ "cellId": $CELL, "mobileCountryCode": $MCC, "mobileNetworkCode": $MNC, "age": 0 }"
+
 requestBody=$(cat <<-END
 {
   "homeMobileCountryCode": $MCC,
@@ -98,7 +101,8 @@ requestBody=$(cat <<-END
   "radioType": "$RT",
   "carrier": "$CARRIER",
   "considerIp": false,
-  "wifiAccessPoints": [${wifiAccessPoints}]
+  "wifiAccessPoints": [${wifiAccessPoints}],
+  "cellTowers": [$cellTowers]
 }
 END
 )
