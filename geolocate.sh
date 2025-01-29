@@ -14,8 +14,8 @@ CacheFile="/tmp/geolocate.cache"
 
 serving=`gsmctl -K`
 RT=`echo $serving | awk -F, '{print $3}' | tr -d \"`
-MCC=`echo $serving | awk -F, '{print $5}'`
-MNC=`echo $serving | awk -F, '{print $6}'`
+MCC=`echo $serving | awk -F, '{print $5}' | sed 's/^0*//'`
+MNC=`echo $serving | awk -F, '{print $6}' | sed 's/^0*//'`
 CELL=`echo $serving | awk -F, '{print "0x"$7}' | xargs printf "%d"`
 
 CARRIER=`gsmctl -o`
