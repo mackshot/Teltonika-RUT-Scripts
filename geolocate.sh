@@ -14,8 +14,8 @@ CacheFile="/tmp/geolocate.cache"
 
 serving=`gsmctl -K`
 RT=`echo $serving | sed -E 's/Access tech: ([a-z]+)\b.*/\1/i'`
-MCC=$((`echo $serving | sed -E 's/.*MCC: ([0-9]+)\b.*/\1/i'`))
-MNC=$((`echo $serving | sed -E 's/.*MNC: ([0-9]+)\b.*/\1/i'`))
+MCC=$((`echo $serving | sed -E 's/.*MCC: ([0-9]+)\b.*/\1/i'`) | sed 's/^0*//')
+MNC=$((`echo $serving | sed -E 's/.*MNC: ([0-9]+)\b.*/\1/i'`) | sed 's/^0*//')
 CELL=`gsmctl -C`
 CARRIER=`gsmctl -o`
 
